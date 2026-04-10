@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Search, Loader2, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import BookDetailModal from "@/components/BookDetailModal";
 import BookCard from "@/components/BookCard";
 import { searchBooks, CATEGORIES, MOODS, Book, SEED_BOOKS } from "@/lib/books";
 
