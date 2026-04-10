@@ -14,7 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      favorites: {
+        Row: {
+          book_author: string | null
+          book_cover: string | null
+          book_description: string | null
+          book_isbn: string
+          book_title: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          book_author?: string | null
+          book_cover?: string | null
+          book_description?: string | null
+          book_isbn: string
+          book_title: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          book_author?: string | null
+          book_cover?: string | null
+          book_description?: string | null
+          book_isbn?: string
+          book_title?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          favorite_genres: string[] | null
+          favorite_moods: string[] | null
+          id: string
+          onboarding_completed: boolean
+          reading_pace: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          favorite_genres?: string[] | null
+          favorite_moods?: string[] | null
+          id?: string
+          onboarding_completed?: boolean
+          reading_pace?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          favorite_genres?: string[] | null
+          favorite_moods?: string[] | null
+          id?: string
+          onboarding_completed?: boolean
+          reading_pace?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
