@@ -1,18 +1,48 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Loader2, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import BookDetailModal from "@/components/BookDetailModal";
 import BookCard from "@/components/BookCard";
-import { searchBooks, CATEGORIES, MOODS, Book, SEED_BOOKS } from "@/lib/books";
+import { searchBooks, Book, SEED_BOOKS } from "@/lib/books";
+import { discoverHardcoverBooks } from "@/api/hardcover";
 
 export default function SearchBooks() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Book[]>([]);
+  const [popular, setPopular] = useState<Book[]>(SEED_BOOKS.slice(0, 4));
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+  useEffect(() => {
+    const fetchPopular = async () => {
+      try {
+        const books = await discoverHardcoverBooks({ query: "fiction", limit: 20 });
+        if (books.length > 0) {
+          setPopular(books.slice(0, 4));
+        }
+      } catch {
+        // Keep seed books as fallback.
+      }
+    };
+    fetchPopular();
+  }, []);
+
+  const tagPool = useMemo(() => {
+    const source = results.length > 0 ? results : popular;
+    const categories = new Set<string>();
+    const moods = new Set<string>();
+    for (const book of source) {
+      book.categories.forEach((c) => categories.add(c));
+      book.mood.forEach((m) => moods.add(m));
+    }
+    return {
+      categories: Array.from(categories).slice(0, 12),
+      moods: Array.from(moods).slice(0, 12),
+    };
+  }, [results, popular]);
 
   const handleSearch = async (q: string) => {
     if (!q.trim()) return;
@@ -50,7 +80,7 @@ export default function SearchBooks() {
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Categories</p>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
+              {tagPool.categories.map((c) => (
                 <Badge key={c} variant="outline" className="cursor-pointer hover:bg-accent transition-colors" onClick={() => handleTagClick(c)}>{c}</Badge>
               ))}
             </div>
@@ -58,7 +88,7 @@ export default function SearchBooks() {
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Moods</p>
             <div className="flex flex-wrap gap-2">
-              {MOODS.map((m) => (
+              {tagPool.moods.map((m) => (
                 <Badge key={m} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => handleTagClick(m)}>{m}</Badge>
               ))}
             </div>
@@ -86,7 +116,7 @@ export default function SearchBooks() {
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground font-medium">Popular right now</p>
             <div className="grid sm:grid-cols-2 gap-4">
-              {SEED_BOOKS.slice(0, 4).map((book) => (
+              {popular.map((book) => (
                 <BookCard key={book.id} book={book} compact onClick={() => setSelectedBook(book)} />
               ))}
             </div>

@@ -1,3 +1,5 @@
+import { searchHardcoverBooks } from "@/api/hardcover";
+
 export interface Book {
   id: string;
   title: string;
@@ -9,6 +11,8 @@ export interface Book {
   rating: number;
   pages: number;
   isbn: string;
+  usersCount?: number;
+  shelfName?: string;
 }
 
 export const AMAZON_AFFILIATE_TAG = "cozycorner-20";
@@ -133,24 +137,7 @@ export const SEED_BOOKS: Book[] = [
 
 export async function searchBooks(query: string): Promise<Book[]> {
   try {
-    const res = await fetch(
-      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20&fields=key,title,author_name,cover_i,first_sentence,subject,number_of_pages_median,isbn,ratings_average`
-    );
-    const data = await res.json();
-    return (data.docs || [])
-      .filter((doc: any) => doc.cover_i)
-      .map((doc: any) => ({
-        id: doc.key,
-        title: doc.title,
-        author: doc.author_name?.[0] || "Unknown",
-        cover: `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`,
-        description: doc.first_sentence?.[0] || "A captivating read waiting to be discovered.",
-        categories: (doc.subject || []).slice(0, 3),
-        mood: [],
-        rating: doc.ratings_average ? Math.round(doc.ratings_average * 10) / 10 : 4.0,
-        pages: doc.number_of_pages_median || 300,
-        isbn: doc.isbn?.[0] || "",
-      }));
+    return await searchHardcoverBooks(query, 20);
   } catch {
     return [];
   }
