@@ -50,10 +50,16 @@ function normalizeBook(result) {
   };
 }
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
 async function callHardcover(operation, variables) {
-  const res = await fetch("/api/hardcover", {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/hardcover-proxy`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${SUPABASE_KEY}`,
+    },
     body: JSON.stringify({ operation, variables }),
   });
 
@@ -85,4 +91,3 @@ export async function discoverHardcoverBooks({
     .map(normalizeBook)
     .filter((book) => book.usersCount >= minPopularity && book.usersCount <= maxPopularity);
 }
-

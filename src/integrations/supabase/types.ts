@@ -23,7 +23,7 @@ export type Database = {
           book_title: string
           created_at: string
           id: string
-          shelf_name: string
+          shelf_name: string | null
           user_id: string
         }
         Insert: {
@@ -34,7 +34,7 @@ export type Database = {
           book_title: string
           created_at?: string
           id?: string
-          shelf_name?: string
+          shelf_name?: string | null
           user_id: string
         }
         Update: {
@@ -45,7 +45,7 @@ export type Database = {
           book_title?: string
           created_at?: string
           id?: string
-          shelf_name?: string
+          shelf_name?: string | null
           user_id?: string
         }
         Relationships: []
@@ -54,7 +54,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
-          custom_shelves: string[]
+          custom_shelves: string[] | null
           display_name: string | null
           favorite_genres: string[] | null
           favorite_moods: string[] | null
@@ -67,7 +67,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
-          custom_shelves?: string[]
+          custom_shelves?: string[] | null
           display_name?: string | null
           favorite_genres?: string[] | null
           favorite_moods?: string[] | null
@@ -80,7 +80,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
-          custom_shelves?: string[]
+          custom_shelves?: string[] | null
           display_name?: string | null
           favorite_genres?: string[] | null
           favorite_moods?: string[] | null

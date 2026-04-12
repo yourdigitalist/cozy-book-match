@@ -36,7 +36,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select("display_name, onboarding_completed, favorite_genres, favorite_moods, reading_pace, custom_shelves")
       .eq("user_id", userId)
       .single();
-    setProfile(data);
+    if (data) {
+      setProfile(data as any);
+    }
   };
 
   const refreshProfile = async () => {

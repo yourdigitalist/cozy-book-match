@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const STANDARD_SHELVES = ["want_to_read", "reading", "read", "not_now"] as const;
 
 function toShelfLabel(value: string) {
-  return value.replaceAll("_", " ").replace(/\b\w/g, (char) => char.toUpperCase());
+  return value.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export default function Favorites() {
@@ -63,10 +63,10 @@ export default function Favorites() {
   const shelfBooks = favorites.filter((book) => (book.shelfName || "want_to_read") === activeShelf);
 
   const handleCreateShelf = async () => {
-    const trimmed = newShelf.trim().toLowerCase().replaceAll(" ", "_");
+    const trimmed = newShelf.trim().toLowerCase().replace(/ /g, "_");
     if (!user || !trimmed || shelves.includes(trimmed)) return;
     const customShelves = [...(profile?.custom_shelves || []), trimmed];
-    await supabase.from("profiles").update({ custom_shelves: customShelves }).eq("user_id", user.id);
+    await supabase.from("profiles").update({ custom_shelves: customShelves } as any).eq("user_id", user.id);
     await refreshProfile();
     setActiveShelf(trimmed);
     setNewShelf("");
@@ -75,7 +75,7 @@ export default function Favorites() {
   const moveBookToShelf = async (book: Book, targetShelf: string) => {
     if (!user || !book.shelfName || book.shelfName === targetShelf) return;
 
-    await supabase.from("favorites").upsert(
+    await (supabase.from("favorites") as any).upsert(
       {
         user_id: user.id,
         book_isbn: book.isbn || book.id,
