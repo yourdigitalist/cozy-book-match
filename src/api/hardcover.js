@@ -13,7 +13,10 @@ function pickCover(result) {
   );
 }
 
-function normalizeBook(result) {
+function normalizeBook(hit) {
+  // Hardcover search returns { document: { ... } } per hit
+  const result = hit?.document || hit;
+
   const authorFromContributions = toArray(result?.contributions)
     .map((c) => c?.author?.name)
     .filter(Boolean);
@@ -77,7 +80,8 @@ async function callHardcover(operation, variables) {
 
 export async function searchHardcoverBooks(query, limit = 20) {
   const payload = await callHardcover("searchBooks", { query, limit });
-  return toArray(payload?.results).map(normalizeBook);
+  const hits = payload?.results?.hits || toArray(payload?.results);
+  return hits.map(normalizeBook);
 }
 
 export async function discoverHardcoverBooks({
@@ -87,7 +91,8 @@ export async function discoverHardcoverBooks({
   limit = 40,
 } = {}) {
   const payload = await callHardcover("discoverBooks", { query, limit });
-  return toArray(payload?.results)
+  const hits = payload?.results?.hits || toArray(payload?.results);
+  return hits
     .map(normalizeBook)
     .filter((book) => book.usersCount >= minPopularity && book.usersCount <= maxPopularity);
 }
