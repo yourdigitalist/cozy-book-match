@@ -86,7 +86,7 @@ export default function Discover() {
     if (!currentBook) return;
 
     if (user) {
-      await supabase.from("favorites").upsert({
+      await (supabase.from("favorites") as any).upsert({
         user_id: user.id,
         book_isbn: currentBook.isbn || currentBook.id,
         shelf_name: shelfName,

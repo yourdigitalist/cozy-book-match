@@ -33,10 +33,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("display_name, onboarding_completed, favorite_genres, favorite_moods, reading_pace, custom_shelves"  as any)
+      .select("display_name, onboarding_completed, favorite_genres, favorite_moods, reading_pace, custom_shelves")
       .eq("user_id", userId)
       .single();
-    setProfile(data);
+    if (data) {
+      setProfile(data as any);
+    }
   };
 
   const refreshProfile = async () => {

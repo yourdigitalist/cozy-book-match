@@ -66,7 +66,7 @@ export default function Favorites() {
     const trimmed = newShelf.trim().toLowerCase().replace(/ /g, "_");
     if (!user || !trimmed || shelves.includes(trimmed)) return;
     const customShelves = [...(profile?.custom_shelves || []), trimmed];
-    await supabase.from("profiles").update({ custom_shelves: customShelves }).eq("user_id", user.id);
+    await supabase.from("profiles").update({ custom_shelves: customShelves } as any).eq("user_id", user.id);
     await refreshProfile();
     setActiveShelf(trimmed);
     setNewShelf("");
@@ -75,7 +75,7 @@ export default function Favorites() {
   const moveBookToShelf = async (book: Book, targetShelf: string) => {
     if (!user || !book.shelfName || book.shelfName === targetShelf) return;
 
-    await supabase.from("favorites").upsert(
+    await (supabase.from("favorites") as any).upsert(
       {
         user_id: user.id,
         book_isbn: book.isbn || book.id,
